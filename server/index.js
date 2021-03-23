@@ -10,7 +10,12 @@ put the git folder on the server folder, now push the app to heroku using git th
 */
 
 const express = require('express');//common js modules instead of import
+const mongoose = require('mongoose');//moongose library for connecting to db
+const keys = require('./config/keys')
+
+require('./models/User');//load this for future use
 require('./services/passport')//to execute  passportConfig, it doesnt return anything so we just rquire it and it will executed in future use
+mongoose.connect(keys.mongoURI);//connect to mongodb server
 const authRoutes = require('./routes/authRoutes')//func that takes our app object and attaches the 2 routes to it 
 const app = express();//set up configuration that will listen to incoming requests from node to express,all route handlers will associated to this app
 authRoutes(app);
