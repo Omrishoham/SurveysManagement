@@ -10,6 +10,8 @@ put the git folder on the server folder, now push the app to heroku using git th
 */
 
 const express = require('express');//common js modules instead of import
+const cookieSession = require('cookie-session');
+const passport = require('passport');
 const mongoose = require('mongoose');//moongose library for connecting to db
 const keys = require('./config/keys')
 
@@ -18,10 +20,23 @@ require('./services/passport')//to execute  passportConfig, it doesnt return any
 mongoose.connect(keys.mongoURI);//connect to mongodb server
 const authRoutes = require('./routes/authRoutes')//func that takes our app object and attaches the 2 routes to it 
 const app = express();//set up configuration that will listen to incoming requests from node to express,all route handlers will associated to this app
-authRoutes(app);
-//we can do also- require('./services/passport')(app) instead of the 2 lines
+/*
+Cookie Use and Enabling
+*/
+//this 3 middlewares will take the incoming request and makes adjusments to it(extracting cookie data and pull user id from it)
+//enabling cookies in our app
+app.use(
+    cookieSession({//allows us to specify any cookie
+        maxAge: 30*24*60*60*1000,//how much time will last
+        keys:[keys.cookieKey]
+    })
+);
+//telling passport to use cookies to manage the auth
+app.use(passport.initialize());
+app.use(passport.session());
 
 
+authRoutes(app);//we can do also- require('./services/passport')(app) instead of the 2 lines
 //look for the port heruko set us to use(dynamic port in runtime) , if there isnt such port , set by default 5000 , so in development environment we use port 5000 , in production we use whenever port heruko wil provide to us
 const PORT = process.env.PORT || 5000;
 //this line instructs express to tell nodejs listen on port 5000
