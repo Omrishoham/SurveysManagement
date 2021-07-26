@@ -7,11 +7,17 @@ app.get('/auth/google',passport.authenticate('google',{
 }));
 
 //this routh handler handle with callback after user grant permission to this callback, then sent request with the code to goolge and then google sent profile of user and we goes to the accessToken up
-app.get('/auth/google/callback',passport.authenticate('google'));
+app.get('/auth/google/callback',
+passport.authenticate('google'),
+//after user succeeded authenticates with google we redirect him to sureveys route
+(req,res)=>{
+    res.redirect('/surveys');
+}
+);
 
 app.get('/api/logout',(req,res)=>{
     req.logout();//func that takes cookie with id and kills it
-    res.send(req.user);
+    res.redirect('/')//after logout redirect to root route
 });
 //request>extracts cookie data from cookie session>pulls id from cookie data>desrialize user , turn user id to a user>user model instance added to req object as req.user
 app.get('/api/current_user',(req,res)=>{

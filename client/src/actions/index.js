@@ -4,8 +4,11 @@ They are the only source of information for the Redux store to be updated.
 Reducers update store based on the value of the action
 */
 import axios from 'axios'
-import {FETCH_USER} from './types'
+import { FETCH_USER } from './types'
 
-const fetchUser = () =>{
-    axios.get('/api/current_user')
-}
+//redux thunk sees function instead action and automatically passes dispatch func to it
+export const fetchUser = () => async (dispatch) => {
+    const res = await axios.get('/api/current_user');
+    dispatch({ type: FETCH_USER, payload: res.data });//after we finish with the axios,then we do dispatch to all reducers
+};
+
