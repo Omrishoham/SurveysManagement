@@ -12,3 +12,8 @@ export const fetchUser = () => async (dispatch) => {
     dispatch({ type: FETCH_USER, payload: res.data });//after we finish with the axios,then we do dispatch to all reducers
 };
 
+export const handleToken = (token) => async (dispatch) => {
+    const res = await axios.post('/api/stripe',token);
+    dispatch({type:FETCH_USER, payload:res.data});
+};
+

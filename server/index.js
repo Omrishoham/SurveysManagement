@@ -19,12 +19,14 @@ require('./models/User');//load this for future use
 require('./services/passport')//to execute  passportConfig, it doesnt return anything so we just rquire it and it will executed in future use
 mongoose.connect(keys.mongoURI);//connect to mongodb server
 const authRoutes = require('./routes/authRoutes')//func that takes our app object and attaches the 2 routes to it 
+const billingRoutes = require('./routes/billingRoutes')
 const app = express();//set up configuration that will listen to incoming requests from node to express,all route handlers will associated to this app
 /*
 Cookie Use and Enabling
 */
-//this 3 middlewares will take the incoming request and makes adjusments to it(extracting cookie data and pull user id from it)
+//this 4 middlewares will take the incoming request and makes adjusments to it(extracting cookie data and pull user id from it)
 //enabling cookies in our app
+app.use(express.json());//instead body parser
 app.use(
     cookieSession({//allows us to specify any cookie
         maxAge: 30*24*60*60*1000,//how much time will last
@@ -37,6 +39,8 @@ app.use(passport.session());
 
 
 authRoutes(app);//we can do also- require('./services/passport')(app) instead of the 2 lines
+billingRoutes(app);
+
 //look for the port heruko set us to use(dynamic port in runtime) , if there isnt such port , set by default 5000 , so in development environment we use port 5000 , in production we use whenever port heruko wil provide to us
 const PORT = process.env.PORT || 5000;
 //this line instructs express to tell nodejs listen on port 5000
